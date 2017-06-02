@@ -1,17 +1,17 @@
 <template>
   <div class="smoothie">
-    <h1>{{ name }}</h1>
+    <v-container fluid>
+      <h2>Selected Ingredients</h2>
+      <ul class="ingredients">
+        <ActiveIngredient v-for="ingredient in selectedIngredients"
+          :key="ingredient.id"
+          :ingredient="ingredient">
+        </ActiveIngredient>
+      </ul>
 
-    <h2>All Ingredients</h2>
+      <Mixer :ingredients="selectedIngredients"></Mixer>
+    </v-container>
     <IngredientMenu :ingredients="allIngredients"></IngredientMenu>
-
-    <h2>Selected Ingredients</h2>
-    <ul class="ingredients">
-      <ActiveIngredient v-for="ingredient in selectedIngredients"
-        :key="ingredient.id"
-        :ingredient="ingredient">
-      </ActiveIngredient>
-    </ul>
   </div>
 </template>
 
@@ -19,13 +19,15 @@
 import ActiveIngredient from '@/components/ActiveIngredient'
 import NewIngredient    from '@/components/NewIngredient'
 import IngredientMenu   from '@/components/IngredientMenu'
+import Mixer            from '@/components/Mixer'
 
 export default {
   name: 'smoothie',
   components: {
     ActiveIngredient,
     NewIngredient,
-    IngredientMenu
+    IngredientMenu,
+    Mixer
   },
   data() {
     return {

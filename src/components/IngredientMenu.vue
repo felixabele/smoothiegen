@@ -1,37 +1,20 @@
 <template>
   <div class="ingredient-menu">
-    <v-btn light success @click.native="ingredient_menu=!ingredient_menu">
-      Add ingredient
-      <v-icon right light>control_point</v-icon>
-    </v-btn>
-
-    <v-dialog v-model="dialog">
-      <v-card>
-        <v-card-row actions>
-          <v-btn flat dark @click.native="dialog=false" class="text-left">Cancel</v-btn>
-          <v-btn light success @click.native="addItem()">
-            Add {{ selected_ingredient.title }}
-            <v-icon right light>check_circle</v-icon>
-          </v-btn>
-        </v-card-row>
-      </v-card>
-    </v-dialog>
-
     <v-navigation-drawer
       v-model="ingredient_menu"
       persistent
-      absolute
-      height="100%"
+      :mini-variant="mini_variant"
+      temporary
       light
     >
       <v-list>
         <v-list-item>
           <v-list-tile avatar tag="div">
             <v-list-tile-avatar>
-              <img src="https://randomuser.me/api/portraits/men/85.jpg" />
+              <FoodIcon :icon="main_icon"></FoodIcon>
             </v-list-tile-avatar>
             <v-list-tile-content>
-              <v-list-tile-title>John Leider</v-list-tile-title>
+              <v-list-tile-title>Ingredients</v-list-tile-title>
             </v-list-tile-content>
             <v-list-tile-action>
               <v-btn icon dark @click.native.stop="ingredient_menu = !ingredient_menu">
@@ -65,6 +48,45 @@
         </template>
       </v-list>
     </v-navigation-drawer>
+
+    <v-dialog v-model="dialog">
+      <v-card>
+        <v-card-row>
+          <v-card-title>{{ selected_ingredient.title }}</v-card-title>
+        </v-card-row>
+
+        <v-card-row>
+          <v-card-text>
+            <v-flex xs9>
+              <v-slider
+                dark
+                :label="selected_ingredient.unit"
+                :max="selected_ingredient.max"
+                :min="selected_ingredient.min"
+                :step="selected_ingredient.step"
+                v-model="selected_ingredient.quantity"
+              >
+            </v-slider>
+            </v-flex>
+            <v-flex xs3>
+              <v-text-field dark v-model="selected_ingredient.quantity" type="number"></v-text-field>
+            </v-flex>
+          </v-card-text>
+        </v-card-row>
+
+        <v-card-row actions>
+          <v-btn flat dark @click.native="dialog=false" class="text-left">Cancel</v-btn>
+          <v-btn light success @click.native="addItem()">Add <v-icon right light>check_circle</v-icon></v-btn>
+        </v-card-row>
+      </v-card>
+    </v-dialog>
+
+    <v-bottom-nav value="true" class="transparent">
+      <v-btn flat dark class="teal--text" @click.native.stop="ingredient_menu = !ingredient_menu">
+        <span>Add ingredient</span>
+        <v-icon>control_point</v-icon>
+      </v-btn>
+    </v-bottom-nav>
   </div>
 </template>
 
@@ -91,8 +113,10 @@ export default {
   },
   data() {
     return {
+      main_icon: 'groceries.png',
       ingredient_menu: false,
       dialog: false,
+      mini_variant: false,
       selected_ingredient: {},
       items: [
         {

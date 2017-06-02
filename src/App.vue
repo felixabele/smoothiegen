@@ -2,18 +2,16 @@
   <div id="app">
     <v-app>
       <v-toolbar>
+        <v-toolbar-side-icon light></v-toolbar-side-icon>
         <v-toolbar-title v-text="title"></v-toolbar-title>
-        <v-toolbar-items class="hidden-md-and-down">
+        <v-toolbar-items>
           <v-toolbar-item ripple @click.native="goto('/')">Home</v-toolbar-item>
           <v-toolbar-item ripple @click.native="goto('/smoothie')">Smoothie</v-toolbar-item>
         </v-toolbar-items>
       </v-toolbar>
       <main>
-        <v-container fluid>
-          <router-view></router-view>
-        </v-container>
+        <router-view></router-view>
       </main>
-      <v-footer></v-footer>
     </v-app>
   </div>
 </template>
