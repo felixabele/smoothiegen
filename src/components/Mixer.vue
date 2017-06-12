@@ -20,13 +20,13 @@ export default {
   computed: {
     absoluteVolume() {
       return this.ingredients
-        .map((i) => i.quantity)
+        .map((i) => i.quantity * i.weight)
         .reduce((i1, i2) => i1 + i2, 0)
     }
   },
   methods: {
     ingredientStyle: function(ingredient) {
-      const percentage = (100.0/this.absoluteVolume) * ingredient.quantity
+      const percentage = (100.0/this.absoluteVolume) * ingredient.quantity * ingredient.weight
       return {
         height: percentage +'%'
       }

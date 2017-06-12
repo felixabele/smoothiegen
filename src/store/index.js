@@ -1,70 +1,71 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import _ from 'lodash'
+import VueResource from 'vue-resource'
 
 Vue.use(Vuex)
+Vue.use(VueResource)
 
-const item_defaults = {unit: 'g', min: 10, max: 500, step: 10, quantity: null}
+const item_defaults = {unit: 'g', min: 10, max: 500, step: 10, quantity: null, weight: 1, nutrients: []}
+const api_key = 'AMy7Ff8GPUPIDvza7OHMGHkoDzpPyw61NLX3NWgB'
 
 let items =
   [
     // Fruit
-    {title: 'Apple', image: 'apple-1.png', category: 'fruit', id: 1},
-    {title: 'Banana', image: 'banana.png', category: 'fruit', id: 2},
-    {title: 'Blueberries', image: 'blueberries.png', category: 'fruit', id: 3},
-    {title: 'Cherries', image: 'cherries.png', category: 'fruit', id: 4},
-    {title: 'Coconut', image: 'coconut.png', category: 'fruit', id: 5},
-    {title: 'Fig', image: 'fig.png', category: 'fruit', id: 6},
-    {title: 'Grapes', image: 'grapes.png', category: 'fruit', id: 7},
-    {title: 'Hazelnut', image: 'hazelnut.png', category: 'fruit', id: 8},
-    {title: 'Lemon', image: 'lemon-1.png', category: 'fruit', id: 9},
-    {title: 'Lime', image: 'lime.png', category: 'fruit', id: 10},
-    {title: 'Orange', image: 'orange.png', category: 'fruit', id: 11},
-    {title: 'Peach', image: 'peach.png', category: 'fruit', id: 12},
-    {title: 'Pear', image: 'pear.png', category: 'fruit', id: 13},
-    {title: 'Pineapple', image: 'pineapple.png', category: 'fruit', id: 14},
-    {title: 'Pistachio', image: 'pistachio.png', category: 'fruit', id: 15},
-    {title: 'Pomegranate', image: 'pomegranate.png', category: 'fruit', id: 16},
-    {title: 'Raspberry', image: 'raspberry.png', category: 'fruit', id: 17},
-    {title: 'Seeds', image: 'seeds.png', category: 'fruit', id: 18},
-    {title: 'Strawberry', image: 'strawberry.png', category: 'fruit', id: 19},
-    {title: 'Watermelon', image: 'watermelon.png', category: 'fruit', id: 20},
+    {title: 'Apple', image: 'apple-1.png', category: 'fruit', id: '09003'},
+    {title: 'Banana', image: 'banana.png', category: 'fruit', id: '09040'},
+    {title: 'Blueberries', image: 'blueberries.png', category: 'fruit', id: '09050'},
+    {title: 'Cherries', image: 'cherries.png', category: 'fruit', id: '09063'},
+    {title: 'Coconut Water', image: 'coconut.png', category: 'fruit', id: '12119'},
+    {title: 'Fig', image: 'fig.png', category: 'fruit', id: '09089'},
+    {title: 'Grapes', image: 'grapes.png', category: 'fruit', id: '09132'},
+    {title: 'Hazelnut', image: 'hazelnut.png', category: 'fruit', id: '12120'},
+    {title: 'Lemon', image: 'lemon-1.png', category: 'fruit', id: '09150'},
+    {title: 'Lime', image: 'lime.png', category: 'fruit', id: '09159'},
+    {title: 'Orange', image: 'orange.png', category: 'fruit', id: '09200'},
+    {title: 'Peach', image: 'peach.png', category: 'fruit', id: '09236'},
+    {title: 'Pear', image: 'pear.png', category: 'fruit', id: '09252'},
+    {title: 'Pineapple', image: 'pineapple.png', category: 'fruit', id: '09266'},
+    {title: 'Pistachio', image: 'pistachio.png', category: 'fruit', id: '12151'},
+    {title: 'Pomegranate', image: 'pomegranate.png', category: 'fruit', id: '09286'},
+    {title: 'Raspberry', image: 'raspberry.png', category: 'fruit', id: '09302'},
+    {title: 'Strawberry', image: 'strawberry.png', category: 'fruit', id: '09316'},
+    {title: 'Watermelon', image: 'watermelon.png', category: 'fruit', id: '09326'},
 
     // Vegetables
-    {title: 'Asparagus', image: 'asparagus.png', category: 'vegetable', id: 30},
-    {title: 'Aubergine', image: 'aubergine.png', category: 'vegetable', id: 31},
-    {title: 'Avocado', image: 'avocado.png', category: 'vegetable', id: 32},
-    {title: 'Beans', image: 'beans.png', category: 'vegetable', id: 33},
-    {title: 'Broccoli', image: 'broccoli.png', category: 'vegetable', id: 34},
-    {title: 'Cabbage', image: 'cabbage.png', category: 'vegetable', id: 35},
-    {title: 'Cauliflower', image: 'cauliflower.png', category: 'vegetable', id: 36},
-    {title: 'Carrot', image: 'carrot.png', category: 'vegetable', id: 37},
-    {title: 'Chili', image: 'chili.png', category: 'vegetable', id: 38},
-    {title: 'Chives', image: 'chives.png', category: 'vegetable', id: 39},
-    {title: 'Corn', image: 'corn.png', category: 'vegetable', id: 40},
-    {title: 'Cucumber', image: 'cucumber.png', category: 'vegetable', id: 41},
-    {title: 'Garlic', image: 'garlic.png', category: 'vegetable', id: 42},
-    {title: 'Mushrooms', image: 'mushrooms.png', category: 'vegetable', id: 43},
-    {title: 'Olives', image: 'olives.png', category: 'vegetable', id: 44},
-    {title: 'Onion', image: 'onion.png', category: 'vegetable', id: 45},
-    {title: 'Peas', image: 'peas.png', category: 'vegetable', id: 46},
-    {title: 'Pepper', image: 'pepper.png', category: 'vegetable', id: 47},
-    {title: 'Pumpkin', image: 'pumpkin.png', category: 'vegetable', id: 48},
-    {title: 'Radish', image: 'radish.png', category: 'vegetable', id: 49},
-    {title: 'Salad', image: 'salad-1.png', category: 'vegetable', id: 50},
-    {title: 'Tomato', image: 'tomato.png', category: 'vegetable', id: 51},
+    {title: 'Asparagus', image: 'asparagus.png', category: 'vegetable', id: '11011'},
+    {title: 'Aubergine', image: 'aubergine.png', category: 'vegetable', id: '11209'},
+    {title: 'Avocado', image: 'avocado.png', category: 'vegetable', id: '09037'},
+    {title: 'Beans', image: 'beans.png', category: 'vegetable', id: '11052'},
+    {title: 'Broccoli', image: 'broccoli.png', category: 'vegetable', id: '11090'},
+    {title: 'Cabbage', image: 'cabbage.png', category: 'vegetable', id: '11109'},
+    {title: 'Cauliflower', image: 'cauliflower.png', category: 'vegetable', id: '11135'},
+    {title: 'Carrot', image: 'carrot.png', category: 'vegetable', id: '11124'},
+    {title: 'Chili', image: 'chili.png', category: 'vegetable', id: '11819'},
+    {title: 'Chives', image: 'chives.png', category: 'vegetable', id: '11156'},
+    {title: 'Corn', image: 'corn.png', category: 'vegetable', id: '11167'},
+    {title: 'Cucumber', image: 'cucumber.png', category: 'vegetable', id: '11206'},
+    {title: 'Garlic', image: 'garlic.png', category: 'vegetable', id: '11215'},
+    {title: 'Mushrooms', image: 'mushrooms.png', category: 'vegetable', id: '11260'},
+    {title: 'Olives', image: 'olives.png', category: 'vegetable', id: '09195'},
+    {title: 'Onion', image: 'onion.png', category: 'vegetable', id: '11282'},
+    {title: 'Peas', image: 'peas.png', category: 'vegetable', id: '11304'},
+    {title: 'Pepper', image: 'pepper.png', category: 'vegetable', id: '11333'},
+    {title: 'Pumpkin', image: 'pumpkin.png', category: 'vegetable', id: '11422'},
+    {title: 'Radish', image: 'radish.png', category: 'vegetable', id: '11429'},
+    {title: 'Lettuce', image: 'salad-1.png', category: 'vegetable', id: '11253'},
+    {title: 'Tomato', image: 'tomato.png', category: 'vegetable', id: '11529'},
 
     // Others
-    {title: 'Chocolate', image: 'chocolate.png', category: 'other', id: 60, unit: 'g', min: 10, max: 500, step: 10},
-    {title: 'Coffee', image: 'coffee-maker.png', category: 'other', id: 61, unit: 'ml', min: 10, max: 500, step: 10},
-    {title: 'Eggs', image: 'eggs.png', category: 'other', id: 62, unit: 'pcs', min: 1, max: 10, step: 1},
-    {title: 'Grain', image: 'grain.png', category: 'other', id: 63, unit: 'g', min: 10, max: 500, step: 10},
-    {title: 'oil', image: 'oil.png', category: 'other', id: 70, unit: 'ml', min: 5, max: 200, step: 5},
-    {title: 'Milk', image: 'milk-1.png', category: 'other', id: 71, unit: 'ml', min: 50, max: 1000, step: 10},
-    {title: 'Joghurt', image: 'milk.png', category: 'other', id: 72, unit: 'g', min: 10, max: 500, step: 10},
+    {title: 'Eggs', image: 'eggs.png', category: 'other', id: '01123', unit: 'pcs', min: 1, max: 10, step: 1, weight: 50},
+    {title: 'oil', image: 'oil.png', category: 'other', id: '04042', unit: 'ml', min: 5, max: 200, step: 5},
+    {title: 'Milk', image: 'milk-1.png', category: 'other', id: '01078', unit: 'ml', min: 50, max: 1000, step: 10},
+    {title: 'Yogurt', image: 'milk.png', category: 'other', id: '01116', unit: 'g', min: 10, max: 500, step: 10},
   ]
 
 items.forEach(item => _.defaults(item, item_defaults))
+
+// https://api.nal.usda.gov/ndb/V2/reports?ndbno=01123&type=b&format=json&api_key=AMy7Ff8GPUPIDvza7OHMGHkoDzpPyw61NLX3NWgB
 
 export default new Vuex.Store({
   state: {
@@ -74,7 +75,12 @@ export default new Vuex.Store({
 
   mutations: {
     add(state, item) {
-      state.selected_items.push(item)
+
+      Vue.http.get('https://api.nal.usda.gov/ndb/V2/reports?ndbno='+ item.id +'&type=b&format=json&api_key='+ api_key).then(response => {
+        const food = response.body.foods[0].food
+        item.nutrients = food.nutrients
+        state.selected_items.push(item)
+      });
     },
     remove(state, item) {
       state.selected_items = state.selected_items.filter(i => i.id != item.id)
